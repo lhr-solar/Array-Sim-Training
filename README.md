@@ -7,14 +7,14 @@ This algorithm is in the class of Hill-Climbing algorithms, which means we are t
 The algorithm is quite novel, but it is popularly used because of its ease of implementation.
 The algorithm:
 1. Calculate the power at your current point (current * voltage)
-2. Calculate $\Delta P$, the difference between your current power and your previous power.
-3. Calculate $\Delta V$, the difference between your current voltage value and your previous voltage value
+2. Calculate P_diff, the difference between your current power and your previous power.
+3. Calculate V_diff, the difference between your current voltage value and your previous voltage value
 4. Take a fixed stride in voltage either left or right given one of the following conditions:
 
-    - If $\Delta V > 0$ and $\Delta P > 0$, take a stride in positive direction (right)
-    -  If $\Delta V > 0$ and $\Delta P <> 0$, take a stride in negative direction (left)
-    - If $\Delta V < 0$ and $\Delta P < 0$, take a stride in positive direction (right)
-    - If $\Delta V < 0$ and $\Delta P > 0$, take a stride in negative direction (right)
+    - If V_diff> 0 and P_diff > 0, take a stride in positive direction (right)
+    - If V_diff > 0 and P_diff < 0, take a stride in negative direction (left)
+    - If V_diff < 0$ and P_diff < 0, take a stride in positive direction (right)
+    - If V_diff < 0 and P_diff > 0, take a stride in negative direction (left)
 
 There are a few things to consider:
 
