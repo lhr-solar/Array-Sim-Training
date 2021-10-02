@@ -17,7 +17,7 @@ from ArraySimulation.MPPT.LocalMPPTAlgorithms.LocalMPPTAlgorithm import (
 )
 
 
-class PandO(LocalMPPTAlgorithm):
+class BisectionPandO(LocalMPPTAlgorithm):
     """
     The PandO (Perturb and Observe) class is a derived class of
     LocalMPPTAlgorithm, utilizing the change of power and change of voltage over
@@ -26,7 +26,7 @@ class PandO(LocalMPPTAlgorithm):
     """
 
     def __init__(self, numCells=1, strideType="Fixed"):
-        super(PandO, self).__init__(numCells, "PandO", strideType)
+        super(BisectionPandO, self).__init__(numCells, "BisectionPandO", strideType)
         self.vOld = 0
         self.pOld = 0 
         self.stride = .01
@@ -38,17 +38,28 @@ class PandO(LocalMPPTAlgorithm):
         Pdiff = power - (self.pOld)
         Vdiff = arrVoltage - self.vOld
         vRef = arrVoltage
+        adaptstride = self.stride
+        # Decide the value of the stride
+        if (Vdiff != 0):
+            if (Pdiff/Vdiff > 0):
+                adaptstride = Pdiff/Vdiff *.0055
+                print(adaptstride)
+            if (Pdiff/Vdiff < 0):
+                adaptstride = (((arrVoltage + self.vOld)/2) - self.vOld)
+                # print(adaptstride)
+            self.stride = max(adaptstride, self.stride)
+        # Decide which direction to step
         if (arrVoltage == 0):
             vRef = vRef + self.stride
-        if Vdiff > 0:
+        elif Vdiff > 0:
             if Pdiff > 0:
                 vRef = vRef + self.stride
-            if Pdiff < 0:
+            elif Pdiff < 0:
                 vRef = vRef - self.stride
-        if Vdiff < 0:
+        elif Vdiff < 0:
             if Pdiff < 0:
                 vRef = vRef + self.stride
-            if Pdiff > 0:
+            elif Pdiff > 0:
                 vRef = vRef - self.stride
         self.vOld = arrVoltage
         self.pOld = arrVoltage * arrCurrent
