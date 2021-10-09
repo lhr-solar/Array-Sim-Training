@@ -29,7 +29,30 @@ class PandO(LocalMPPTAlgorithm):
         super(PandO, self).__init__(numCells, "PandO", strideType)
         # self._minVoltage = .05
         # self.kick = True
+        self.prevVolt = 0
+        self.prevCurrent = 0
 
     def getReferenceVoltage(self, arrVoltage, arrCurrent, irradiance, temperature):
-        return arrVoltage
+        
+        currVolt = arrVoltage
+        currCurrent = arrCurrent
+
+        if(currVolt==0):
+
+            currVolt+=.01
+            
+            return currVolt
+        
+        voltDiff = currVolt-self.prevVolt
+        PDiff = (currVolt*currCurrent)-(self.prevVolt*self.prevCurrent)
+
+        self.prevVolt = currVolt
+        self.prevCurrent = currCurrent
+        
+        if((voltDiff>0 and PDiff>0)or(voltDiff<0 and PDiff<0)):
+            currVolt+=.01
+        else:
+            currVolt-=.01
+
+        return currVolt
 
